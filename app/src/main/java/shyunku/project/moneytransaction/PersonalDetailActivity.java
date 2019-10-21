@@ -8,6 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -33,7 +34,10 @@ public class PersonalDetailActivity extends AppCompatActivity {
         recyclerView = (RecyclerView)findViewById(R.id.recyclerview_detail);
         recyclerView.setHasFixedSize(true);
 
-        layoutManager = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
+        layoutManager = new LinearLayoutManager(this);
+        ((LinearLayoutManager) layoutManager).setReverseLayout(true);
+        ((LinearLayoutManager) layoutManager).setStackFromEnd(true);
+
         recyclerView.setLayoutManager(layoutManager);
         adapter = new DetailListAdapter(transactions, oppName);
         recyclerView.setAdapter(adapter);

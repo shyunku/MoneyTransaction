@@ -2,13 +2,17 @@ package shyunku.project.moneytransaction;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.method.DigitsKeyListener;
@@ -31,13 +35,13 @@ import java.util.Date;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
-    public static final String Version = "beta 0.7.4.4v";
+    public static final String Version = "beta 0.9.1.6v";
     RecyclerView recyclerView;
     PersonalRecyclerAdapter adapter;
     RecyclerView.LayoutManager layoutManager;
     Context context;
 
-    private final TransactionEngine engine = new TransactionEngine();
+    private TransactionEngine engine = new TransactionEngine();
     TextView totalAmountView, titleView;
 
     @Override
@@ -45,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        checkPermission();
+        engine = new FileManager().loadFile();
         totalAmountView = (TextView)findViewById(R.id.total_amount_view);
         titleView = (TextView)findViewById(R.id.personal_title);
         updateAmount();
@@ -53,7 +59,10 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview_detail);
         recyclerView.setHasFixedSize(true);
 
-        layoutManager = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
+        layoutManager = new LinearLayoutManager(this);
+        ((LinearLayoutManager) layoutManager).setReverseLayout(true);
+        ((LinearLayoutManager) layoutManager).setStackFromEnd(true);
+
         recyclerView.setLayoutManager(layoutManager);
         adapter = new PersonalRecyclerAdapter(engine);
         recyclerView.setAdapter(adapter);
@@ -222,5 +231,16 @@ public class MainActivity extends AppCompatActivity {
             totalAmountView.setTextColor(ContextCompat.getColor(this, R.color.DarkTheme4));
             totalAmountView.setText("- 원");
         }
+    }
+    public void checkPermission(){
+        if(checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        new FileManager().saveFile(engine);
     }
 }

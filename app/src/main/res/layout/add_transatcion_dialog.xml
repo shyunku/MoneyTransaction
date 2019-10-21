@@ -20,6 +20,7 @@
         android:maxLines="1"
         android:textColor="@color/PureWhite"
         android:textColorHint="@color/DarkTheme4"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textView2"
         app:layout_constraintTop_toBottomOf="@+id/TransactionTypeRadioGroup" />
@@ -35,6 +36,7 @@
         android:maxLines="1"
         android:textColor="@color/PureWhite"
         android:textColorHint="@color/DarkTheme4"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/add_transaction_opp_name"
         app:layout_constraintTop_toBottomOf="@+id/add_transaction_opp_name" />
@@ -49,7 +51,7 @@
         android:text="돈 액수(원)"
         android:textColor="@color/Gold"
         android:textColorHint="@color/PureWhite"
-        android:textSize="20sp"
+        android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
@@ -63,7 +65,7 @@
         android:text="거래 시간"
         android:textColor="@color/PureWhite"
         android:textColorHint="@color/PureWhite"
-        android:textSize="20sp"
+        android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/add_transaction_value" />
 
@@ -90,7 +92,7 @@
             android:text="오후 8시 24분"
             android:textColor="@color/DisabledHighlight"
             android:textColorHint="@color/PureWhite"
-            android:textSize="22sp"
+            android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -111,7 +113,7 @@
             android:text="2019년 3월 24일"
             android:textColor="@color/DisabledHighlight"
             android:textColorHint="@color/PureWhite"
-            android:textSize="22sp"
+            android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/register_time_pick"
             app:layout_constraintHorizontal_bias="0.5"
@@ -147,7 +149,7 @@
         android:text="빌려준 돈/빌린 돈 추가"
         android:textColor="@color/PureWhite"
         android:textColorHint="@color/PureWhite"
-        android:textSize="30sp"
+        android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -162,7 +164,7 @@
         android:text="사유/항목 이름"
         android:textColor="@color/PureWhite"
         android:textColorHint="@color/PureWhite"
-        android:textSize="20sp"
+        android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
@@ -176,7 +178,7 @@
         android:text="상대 이름"
         android:textColor="@color/PureWhite"
         android:textColorHint="@color/PureWhite"
-        android:textSize="20sp"
+        android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/TransactionTypeRadioGroup" />
 
@@ -192,6 +194,7 @@
         android:maxLines="1"
         android:textColor="@color/PureWhite"
         android:textColorHint="@color/DarkTheme4"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/add_transaction_opp_name"
         app:layout_constraintTop_toBottomOf="@+id/add_transaction_reason" />
@@ -219,7 +222,7 @@
         android:fontFamily="@font/rixgo"
         android:text="취소"
         android:textColor="@color/PureWhite"
-        android:textSize="18sp"
+        android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/add_transaction_final_button"
         app:layout_constraintTop_toBottomOf="@+id/error_message" />
@@ -235,18 +238,16 @@
         android:fontFamily="@font/rixgo"
         android:text="추가"
         android:textColor="@color/PureWhite"
-        android:textSize="18sp"
+        android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/error_message" />
 
     <RadioGroup
         android:id="@+id/TransactionTypeRadioGroup"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="60dp"
         android:layout_marginTop="24dp"
-        android:layout_marginEnd="60dp"
         android:checkedButton="@id/radio_payback"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
@@ -259,6 +260,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:fontFamily="@font/rixgo"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
             android:text="빌린 돈"
             android:textColor="@color/PureWhite"
             android:textColorHighlight="@color/DisabledHighlight"
@@ -270,6 +273,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:fontFamily="@font/rixgo"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
             android:text="빌려준 돈"
             android:textColor="@color/PureWhite"
             android:textColorHighlight="@color/DisabledHighlight"
@@ -281,6 +286,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:fontFamily="@font/rixgo"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
             android:text="갚는 돈"
             android:textColor="@color/PureWhite"
             android:textColorHighlight="@color/DisabledHighlight"
