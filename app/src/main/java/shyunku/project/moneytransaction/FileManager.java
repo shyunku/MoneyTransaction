@@ -20,12 +20,10 @@ public class FileManager {
 
         Gson gson = new Gson();
         File saveFile  = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/MoneyTransaction");
-        Log.e("r", "GET : "+Environment.getExternalStorageDirectory().getAbsolutePath()+"/MoneyTransaction");
         if(!saveFile.exists())
             saveFile.mkdir();
         try(FileWriter writer = new FileWriter(saveFile+"/savedData.json")){
             gson.toJson(engine, writer);
-            Log.e("r", gson.toJson(engine));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -43,10 +41,14 @@ public class FileManager {
             saveFile.mkdir();
         }
         try {
+            File check = new File(path+"/savedData.json");
+            if(!check.exists())
+                check.createNewFile();
             JsonReader reader = new JsonReader(new FileReader(path+"/savedData.json"));
-            Log.e("a", reader.toString());
             engine = gson.fromJson(new FileReader(path+"/savedData.json"), TransactionEngine.class);
         } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return engine;
