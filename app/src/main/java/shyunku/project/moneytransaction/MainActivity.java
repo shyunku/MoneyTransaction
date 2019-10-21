@@ -35,7 +35,7 @@ import java.util.Date;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
-    public static final String Version = "beta 0.9.1.6v";
+    public static final String Version = "beta 0.9.2.6v";
     RecyclerView recyclerView;
     PersonalRecyclerAdapter adapter;
     RecyclerView.LayoutManager layoutManager;
