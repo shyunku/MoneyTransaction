@@ -35,7 +35,7 @@ import java.util.Date;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
-    public static final String Version = "beta 0.9.3.6v";
+    public static final String Version = "beta 0.9.4.6v";
     RecyclerView recyclerView;
     PersonalRecyclerAdapter adapter;
     RecyclerView.LayoutManager layoutManager;
@@ -50,7 +50,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         checkPermission();
-        engine = new FileManager().loadFile();
+        TransactionEngine e = new FileManager().loadFile();
+        if(e != null) engine = e;
+
         totalAmountView = (TextView)findViewById(R.id.total_amount_view);
         titleView = (TextView)findViewById(R.id.personal_title);
         updateAmount();

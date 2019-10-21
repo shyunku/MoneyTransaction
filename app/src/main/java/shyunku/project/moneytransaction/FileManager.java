@@ -42,8 +42,10 @@ public class FileManager {
         }
         try {
             File check = new File(path+"/savedData.json");
-            if(!check.exists())
+            if(!check.exists()) {
                 check.createNewFile();
+                return null;
+            }
             JsonReader reader = new JsonReader(new FileReader(path+"/savedData.json"));
             engine = gson.fromJson(new FileReader(path+"/savedData.json"), TransactionEngine.class);
         } catch (FileNotFoundException e) {
