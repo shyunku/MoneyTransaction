@@ -20,12 +20,11 @@ public class PersonalTransaction {
     }
 
     public long getRecentUpdateTime(){
-        long ref = System.currentTimeMillis();
-        for(Transaction trans : transactions) {
-            if (trans.getTimestamp() < ref)
+        long ref = 0;
+        for(Transaction trans : transactions)
+            if (trans.getTimestamp() > ref) {
                 ref = trans.getTimestamp();
-        }
-
+            }
         return ref;
     }
 

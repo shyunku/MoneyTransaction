@@ -31,7 +31,7 @@ import java.util.Date;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
-    public static final String Version = "beta 0.7.1.2v";
+    public static final String Version = "beta 0.7.4.4v";
     RecyclerView recyclerView;
     PersonalRecyclerAdapter adapter;
     RecyclerView.LayoutManager layoutManager;
@@ -180,6 +180,9 @@ public class MainActivity extends AppCompatActivity {
                         if(evalue.getText().length()==0){
                             errorMsg.setText("금액을 입력해주세요.");
                             return;
+                        }
+                        if(reasonView.getText().length()==0){
+                            reasonView.setText("이름 없음");
                         }
 
                         int idx = radioGroup.indexOfChild(radioGroup.findViewById(radioGroup.getCheckedRadioButtonId()));

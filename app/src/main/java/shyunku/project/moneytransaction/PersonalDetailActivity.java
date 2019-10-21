@@ -19,7 +19,7 @@ public class PersonalDetailActivity extends AppCompatActivity {
     RecyclerView.LayoutManager layoutManager;
 
     ArrayList<Transaction> transactions = new ArrayList<>();
-    String oppName;
+    String oppName = "NULL";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,22 +43,22 @@ public class PersonalDetailActivity extends AppCompatActivity {
             amount += transactions.get(i).getValue();
 
 
-        TextView title = (TextView)findViewById(R.id.personal_title);
+        TextView title = (TextView)findViewById(R.id.detail_title);
         TextView totalValue = (TextView)findViewById(R.id.total_amount_view);
 
         if(amount>0) {
-            title.setText("나 ← "+oppName);
+            title.setText(oppName+"에게 빌려준 돈");
             totalValue.setTextColor(ContextCompat.getColor(this, R.color.Plus));
             totalValue.setText(amount+" 원");
         }
         else if(amount<0) {
             amount = -amount;
-            title.setText("나 → "+oppName);
+            title.setText(oppName+"에게 갚을 돈");
             totalValue.setTextColor(ContextCompat.getColor(this, R.color.Minus));
             totalValue.setText(amount+" 원");
         }
         else {
-            title.setText("나 = "+oppName);
+            title.setText(oppName+"에게 갚을 돈 없음");
             totalValue.setTextColor(ContextCompat.getColor(this, R.color.DarkTheme4));
             totalValue.setText("- 원");
         }
