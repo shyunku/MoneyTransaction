@@ -1,13 +1,17 @@
 package shyunku.project.moneytransaction;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -64,11 +68,35 @@ public class PersonalRecyclerAdapter extends RecyclerView.Adapter<PersonalRecycl
                 mContext.startActivity(intent);
             }
         });
+
+        holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                final String[] arr = new String[] {"결산하기", curTrans.getPersonName()+"와(과)의 거래 기록 전체 삭제"};
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                builder.setTitle("");
+                builder.setItems(arr, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        switch(i){
+                            case 0:break;
+                        }
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+                return true;
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
         return engine.ptransactions.size();
+    }
+
+    public void filter(String charText){
+        charText = charText.toLowerCase();
     }
 
     public class ViewHolder extends  RecyclerView.ViewHolder{

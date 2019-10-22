@@ -12,6 +12,7 @@ import android.Manifest;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.InputType;
@@ -31,18 +32,21 @@ import android.widget.TimePicker;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
-    public static final String Version = "beta 0.9.4.6v";
+    public static final String Version = "beta 0.10.2.9v";
     RecyclerView recyclerView;
     PersonalRecyclerAdapter adapter;
     RecyclerView.LayoutManager layoutManager;
     Context context;
 
     private TransactionEngine engine = new TransactionEngine();
-    TextView totalAmountView, titleView;
+    TextView totalAmountView;
+    //TextView titleView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         if(e != null) engine = e;
 
         totalAmountView = (TextView)findViewById(R.id.total_amount_view);
-        titleView = (TextView)findViewById(R.id.personal_title);
+        //titleView = (TextView)findViewById(R.id.personal_title);
         updateAmount();
 
         context = this;
@@ -71,6 +75,51 @@ public class MainActivity extends AppCompatActivity {
 
         TextView ver = (TextView)findViewById(R.id.version);
         ver.setText(Version);
+
+        final Button sortAll = (Button)findViewById(R.id.sort_button);
+        sortAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final String[] arr = new String[] {
+                        "이름순으로 정렬 (오름차순 : ㄱ~ㅎ)",
+                        "이름순으로 정렬 (내림차순 : ㅎ~ㄱ)",
+                        "최근 거래 순으로 정렬",
+                        "오래된 거래 순으로 정렬",
+                        "총 거래액으로 정렬 (오름차순)",
+                        "총 거래액으로 정렬 (내림차순)",
+                        "거래 많은 순으로 정렬",};
+                android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("정렬/필터 선택");
+                builder.setItems(arr, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Comparator<PersonalTransaction> comparator = null;
+                        switch(i){
+                            case 0:
+                                comparator = new Comparator<PersonalTransaction>() {
+                                    @Override
+                                    public int compare(PersonalTransaction t1 ,PersonalTransaction t2) {
+                                        return t1.getPersonName().compareTo(t2.getPersonName());
+                                    }
+                                };
+                                break;
+                            case 1:
+                                comparator = new Comparator<PersonalTransaction>() {
+                                    @Override
+                                    public int compare(PersonalTransaction t1 ,PersonalTransaction t2) {
+                                        return t2.getPersonName().compareTo(t1.getPersonName());
+                                    }
+                                };
+                                break;
+                        }
+                        if(comparator!=null)
+                            Collections.sort(engine.ptransactions, comparator);
+                    }
+                });
+                android.app.AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+        });
 
         TextView addTransactionBtn = (TextView) findViewById(R.id.add_transaction_button);
         addTransactionBtn.setOnClickListener(new View.OnClickListener() {
@@ -218,18 +267,18 @@ public class MainActivity extends AppCompatActivity {
     public void updateAmount(){
         int amount = engine.getAmountProfit();
         if(amount>0) {
-            titleView.setText("받을 돈 (+)");
+            //titleView.setText("받을 돈 (+)");
             totalAmountView.setTextColor(ContextCompat.getColor(this, R.color.Plus));
             totalAmountView.setText(amount+" 원");
         }
         else if(amount<0) {
             amount = -amount;
-            titleView.setText("갚을 돈 (-)");
+            //titleView.setText("갚을 돈 (-)");
             totalAmountView.setTextColor(ContextCompat.getColor(this, R.color.Minus));
             totalAmountView.setText(amount+" 원");
         }
         else{
-            titleView.setText("받을 돈 = 갚을 돈");
+            //titleView.setText("받을 돈 = 갚을 돈");
             totalAmountView.setTextColor(ContextCompat.getColor(this, R.color.DarkTheme4));
             totalAmountView.setText("- 원");
         }
