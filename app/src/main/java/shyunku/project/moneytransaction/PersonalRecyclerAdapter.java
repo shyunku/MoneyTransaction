@@ -24,10 +24,12 @@ import java.util.Locale;
 
 public class PersonalRecyclerAdapter extends RecyclerView.Adapter<PersonalRecyclerAdapter.ViewHolder> {
     public TransactionEngine engine = new TransactionEngine();
+    public TransactionEngine realEngine = new TransactionEngine();
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd a h:mm", Locale.KOREA);
     Context mContext;
 
     public PersonalRecyclerAdapter(TransactionEngine engine){
+        realEngine = engine;
         this.engine = engine;
     }
 

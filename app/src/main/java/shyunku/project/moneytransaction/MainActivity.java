@@ -38,7 +38,7 @@ import java.util.Date;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
-    public static final String Version = "beta 0.10.2.9v";
+    public static final String Version = "beta v0.10.5-13";
     RecyclerView recyclerView;
     PersonalRecyclerAdapter adapter;
     RecyclerView.LayoutManager layoutManager;
@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
     private TransactionEngine engine = new TransactionEngine();
     TextView totalAmountView;
+    int sortMethod = 0;
     //TextView titleView;
 
     @Override
@@ -73,6 +74,8 @@ public class MainActivity extends AppCompatActivity {
         adapter = new PersonalRecyclerAdapter(engine);
         recyclerView.setAdapter(adapter);
 
+        sortTransaction();
+
         TextView ver = (TextView)findViewById(R.id.version);
         ver.setText(Version);
 
@@ -81,39 +84,19 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 final String[] arr = new String[] {
+                        "최근 거래 순으로 정렬 (기본)",
+                        "갚을 돈 많은 순으로 정렬",
+                        "받을 돈 많은 순으로 정렬",
                         "이름순으로 정렬 (오름차순 : ㄱ~ㅎ)",
                         "이름순으로 정렬 (내림차순 : ㅎ~ㄱ)",
-                        "최근 거래 순으로 정렬",
-                        "오래된 거래 순으로 정렬",
-                        "총 거래액으로 정렬 (오름차순)",
-                        "총 거래액으로 정렬 (내림차순)",
                         "거래 많은 순으로 정렬",};
                 android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(MainActivity.this);
                 builder.setTitle("정렬/필터 선택");
                 builder.setItems(arr, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Comparator<PersonalTransaction> comparator = null;
-                        switch(i){
-                            case 0:
-                                comparator = new Comparator<PersonalTransaction>() {
-                                    @Override
-                                    public int compare(PersonalTransaction t1 ,PersonalTransaction t2) {
-                                        return t1.getPersonName().compareTo(t2.getPersonName());
-                                    }
-                                };
-                                break;
-                            case 1:
-                                comparator = new Comparator<PersonalTransaction>() {
-                                    @Override
-                                    public int compare(PersonalTransaction t1 ,PersonalTransaction t2) {
-                                        return t2.getPersonName().compareTo(t1.getPersonName());
-                                    }
-                                };
-                                break;
-                        }
-                        if(comparator!=null)
-                            Collections.sort(engine.ptransactions, comparator);
+                        sortMethod = i;
+                        sortTransaction();
                     }
                 });
                 android.app.AlertDialog dialog = builder.create();
@@ -254,6 +237,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                         engine.add(oppName.getText()+"", Integer.parseInt(evalue.getText()+""), times,  types, reasonView.getText()+"");
                         adapter.notifyDataSetChanged();
+                        layoutManager.scrollToPosition(engine.ptransactions.size()-1);
                         updateAmount();
                         alertDialog.dismiss();
                     }
@@ -263,6 +247,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void sortTransaction(){
+        Collections.sort(engine.ptransactions, new ComparatorEngine().getTransactionComparator(sortMethod));
+        adapter.notifyDataSetChanged();
+        layoutManager.scrollToPosition(engine.ptransactions.size()-1);
+    }
+
 
     public void updateAmount(){
         int amount = engine.getAmountProfit();
@@ -288,6 +279,9 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
         }
     }
+
+
+
 
     @Override
     protected void onDestroy() {
