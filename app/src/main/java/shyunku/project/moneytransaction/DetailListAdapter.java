@@ -1,6 +1,8 @@
 package shyunku.project.moneytransaction;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +42,7 @@ public class DetailListAdapter extends RecyclerView.Adapter<DetailListAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Transaction trans = transactions.get(position);
+        final Transaction trans = transactions.get(position);
         holder.reasonView.setText(trans.getReason());
         String typeStr = "";
         switch(trans.getType()){
@@ -63,6 +65,37 @@ public class DetailListAdapter extends RecyclerView.Adapter<DetailListAdapter.Vi
 
         holder.valueView.setText(trans.getValue()+" 원");
         holder.timeView.setText(sdf.format(new Date(trans.getTimestamp())));
+
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String[] arr = null;
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("");
+                switch(trans.getType()){
+                    case Transaction.WILL_PAY_BACK://빌린돈
+                        arr = new String[] {"수정", "삭제", "갚았음"};
+                        break;
+                    case Transaction.LEND://빌려준 돈
+                        arr = new String[] {"수정", "삭제", "받았음"};
+                        break;
+                    case Transaction.PAY_BACK://갚는 돈
+                        arr = new String[] {"수정", "삭제"};
+                        break;
+                }
+                builder.setItems(arr, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        switch(i){
+                            case 0:break;
+                            case 1:break;
+                        }
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+        });
     }
 
     @Override

@@ -15,8 +15,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.text.method.DigitsKeyListener;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +41,7 @@ import java.util.Date;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
-    public static final String Version = "beta v0.10.5-13";
+    public static final String Version = "beta v0.11.7-17";
     RecyclerView recyclerView;
     PersonalRecyclerAdapter adapter;
     RecyclerView.LayoutManager layoutManager;
@@ -104,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        TextView addTransactionBtn = (TextView) findViewById(R.id.add_transaction_button);
+        final TextView addTransactionBtn = (TextView) findViewById(R.id.add_transaction_button);
         addTransactionBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -236,14 +239,38 @@ public class MainActivity extends AppCompatActivity {
                             case 2:types = Transaction.PAY_BACK;break;
                         }
                         engine.add(oppName.getText()+"", Integer.parseInt(evalue.getText()+""), times,  types, reasonView.getText()+"");
-                        adapter.notifyDataSetChanged();
-                        layoutManager.scrollToPosition(engine.ptransactions.size()-1);
+                        sortTransaction();
                         updateAmount();
+                        adapter.update();
+                        new FileManager().saveFile(engine);
                         alertDialog.dismiss();
                     }
                 });
 
                 alertDialog.show();
+            }
+        });
+
+        final EditText searchTile = (EditText)findViewById(R.id.search_filter);
+        searchTile.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                Log.e("BEFORE", engine.ptransactions.size()+"");
+                String text = searchTile.getText().toString().toLowerCase(Locale.getDefault());
+                adapter.filter(text);
+                Log.e("AFTER", engine.ptransactions.size()+"");
+                if(text.equals(""))addTransactionBtn.setEnabled(true);
+                else addTransactionBtn.setEnabled(false);
             }
         });
     }
@@ -278,14 +305,5 @@ public class MainActivity extends AppCompatActivity {
         if(checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
         }
-    }
-
-
-
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        new FileManager().saveFile(engine);
     }
 }

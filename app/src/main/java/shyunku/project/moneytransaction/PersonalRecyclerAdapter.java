@@ -29,8 +29,9 @@ public class PersonalRecyclerAdapter extends RecyclerView.Adapter<PersonalRecycl
     Context mContext;
 
     public PersonalRecyclerAdapter(TransactionEngine engine){
+        Log.e("Receive Engine size ", engine.ptransactions.size()+"");
         realEngine = engine;
-        this.engine = engine;
+        this.engine.ptransactions.addAll(realEngine.ptransactions);
     }
 
     @NonNull
@@ -99,6 +100,23 @@ public class PersonalRecyclerAdapter extends RecyclerView.Adapter<PersonalRecycl
 
     public void filter(String charText){
         charText = charText.toLowerCase();
+        engine.ptransactions.clear();
+
+        if(charText.length() == 0){
+            engine.ptransactions.addAll(realEngine.ptransactions);
+        }else{
+            for(PersonalTransaction t : realEngine.ptransactions){
+                String name = t.getPersonName();
+                if(name.toLowerCase().contains(charText))
+                    engine.ptransactions.add(t);
+            }
+        }
+        notifyDataSetChanged();
+    }
+
+    public void update(){
+        engine.ptransactions.clear();
+        engine.ptransactions.addAll(realEngine.ptransactions);
     }
 
     public class ViewHolder extends  RecyclerView.ViewHolder{
