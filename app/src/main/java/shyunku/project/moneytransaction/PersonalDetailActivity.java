@@ -29,7 +29,7 @@ public class PersonalDetailActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         oppName = intent.getStringExtra("opp_name");
-        transactions = (ArrayList<Transaction>)intent.getSerializableExtra("data");
+        transactions = MainActivity.engine.getTransactionsByName(oppName);
 
         recyclerView = (RecyclerView)findViewById(R.id.recyclerview_detail);
         recyclerView.setHasFixedSize(true);
@@ -66,5 +66,11 @@ public class PersonalDetailActivity extends AppCompatActivity {
             totalValue.setTextColor(ContextCompat.getColor(this, R.color.DarkTheme4));
             totalValue.setText("- 원");
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        MainActivity.engine.setTransactionIdByName(oppName, transactions);
     }
 }

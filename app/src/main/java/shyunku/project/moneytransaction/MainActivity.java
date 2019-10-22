@@ -41,13 +41,13 @@ import java.util.Date;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
-    public static final String Version = "beta v0.11.7-17";
+    public static final String Version = "beta v0.12.3-25";
     RecyclerView recyclerView;
     PersonalRecyclerAdapter adapter;
     RecyclerView.LayoutManager layoutManager;
     Context context;
 
-    private TransactionEngine engine = new TransactionEngine();
+    public static TransactionEngine engine = new TransactionEngine();
     TextView totalAmountView;
     int sortMethod = 0;
     //TextView titleView;
@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         adapter = new PersonalRecyclerAdapter(engine);
         recyclerView.setAdapter(adapter);
 
-        sortTransaction();
+        update();
 
         TextView ver = (TextView)findViewById(R.id.version);
         ver.setText(Version);
@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         sortMethod = i;
-                        sortTransaction();
+                        update();
                     }
                 });
                 android.app.AlertDialog dialog = builder.create();
@@ -239,10 +239,8 @@ public class MainActivity extends AppCompatActivity {
                             case 2:types = Transaction.PAY_BACK;break;
                         }
                         engine.add(oppName.getText()+"", Integer.parseInt(evalue.getText()+""), times,  types, reasonView.getText()+"");
-                        sortTransaction();
-                        updateAmount();
+                        update();
                         adapter.update();
-                        new FileManager().saveFile(engine);
                         alertDialog.dismiss();
                     }
                 });
@@ -265,39 +263,41 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                Log.e("BEFORE", engine.ptransactions.size()+"");
                 String text = searchTile.getText().toString().toLowerCase(Locale.getDefault());
                 adapter.filter(text);
-                Log.e("AFTER", engine.ptransactions.size()+"");
                 if(text.equals(""))addTransactionBtn.setEnabled(true);
                 else addTransactionBtn.setEnabled(false);
+                adapter.sortThis(sortMethod);
             }
         });
     }
 
-    private void sortTransaction(){
-        Collections.sort(engine.ptransactions, new ComparatorEngine().getTransactionComparator(sortMethod));
+    private void update(){
+        adapter.sortThis(sortMethod);
         adapter.notifyDataSetChanged();
         layoutManager.scrollToPosition(engine.ptransactions.size()-1);
+        updateAmount();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        update();
+    }
 
     public void updateAmount(){
         int amount = engine.getAmountProfit();
         if(amount>0) {
-            //titleView.setText("받을 돈 (+)");
-            totalAmountView.setTextColor(ContextCompat.getColor(this, R.color.Plus));
+            totalAmountView.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.Plus));
             totalAmountView.setText(amount+" 원");
         }
         else if(amount<0) {
             amount = -amount;
-            //titleView.setText("갚을 돈 (-)");
-            totalAmountView.setTextColor(ContextCompat.getColor(this, R.color.Minus));
+            totalAmountView.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.Minus));
             totalAmountView.setText(amount+" 원");
         }
         else{
-            //titleView.setText("받을 돈 = 갚을 돈");
-            totalAmountView.setTextColor(ContextCompat.getColor(this, R.color.DarkTheme4));
+            totalAmountView.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.DarkTheme4));
             totalAmountView.setText("- 원");
         }
     }
@@ -305,5 +305,11 @@ public class MainActivity extends AppCompatActivity {
         if(checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        new FileManager().saveFile(engine);
     }
 }

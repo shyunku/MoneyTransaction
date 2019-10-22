@@ -41,7 +41,7 @@ public class DetailListAdapter extends RecyclerView.Adapter<DetailListAdapter.Vi
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         final Transaction trans = transactions.get(position);
         holder.reasonView.setText(trans.getReason());
         String typeStr = "";
@@ -87,9 +87,13 @@ public class DetailListAdapter extends RecyclerView.Adapter<DetailListAdapter.Vi
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         switch(i){
-                            case 0:break;
-                            case 1:break;
+                            case 0:
+                                break;
+                            case 1:
+                                transactions.remove(position);
+                                break;
                         }
+                        notifyDataSetChanged();
                     }
                 });
                 AlertDialog dialog = builder.create();

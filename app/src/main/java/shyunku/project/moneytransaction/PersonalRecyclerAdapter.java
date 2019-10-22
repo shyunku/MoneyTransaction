@@ -19,6 +19,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Locale;
 
@@ -27,9 +28,9 @@ public class PersonalRecyclerAdapter extends RecyclerView.Adapter<PersonalRecycl
     public TransactionEngine realEngine = new TransactionEngine();
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd a h:mm", Locale.KOREA);
     Context mContext;
+    ViewGroup parents;
 
     public PersonalRecyclerAdapter(TransactionEngine engine){
-        Log.e("Receive Engine size ", engine.ptransactions.size()+"");
         realEngine = engine;
         this.engine.ptransactions.addAll(realEngine.ptransactions);
     }
@@ -38,6 +39,7 @@ public class PersonalRecyclerAdapter extends RecyclerView.Adapter<PersonalRecycl
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         mContext = parent.getContext();
+        parents = parent;
         LayoutInflater inflater = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.transaction_item_by_person, parent, false);
         ViewHolder holder = new ViewHolder(view);
@@ -75,15 +77,24 @@ public class PersonalRecyclerAdapter extends RecyclerView.Adapter<PersonalRecycl
         holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                final String[] arr = new String[] {"결산하기", curTrans.getPersonName()+"와(과)의 거래 기록 전체 삭제"};
+                final String[] arr = new String[] {"결산하기",  curTrans.getPersonName()+" 거래 기록 전체 삭제", "이 항목 삭제"};
                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                 builder.setTitle("");
                 builder.setItems(arr, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         switch(i){
-                            case 0:break;
+                            case 0:
+                                break;
+                            case 1:
+                                break;
+                            case 2:
+                                realEngine.removeByName(curTrans.getPersonName());
+                                engine.removeByName(curTrans.getPersonName());
+                                break;
                         }
+                        updateAmount();
+                        notifyDataSetChanged();
                     }
                 });
                 AlertDialog dialog = builder.create();
@@ -114,6 +125,29 @@ public class PersonalRecyclerAdapter extends RecyclerView.Adapter<PersonalRecycl
         notifyDataSetChanged();
     }
 
+    public void updateAmount(){
+        int amount = engine.getAmountProfit();
+        totalAmountView = (TextView) ((ViewGroup)parents.getParent()).findViewById(R.id.total_amount_view);
+        Log.e("a", totalAmountView.getText().toString());
+        if(amount>0) {
+            totalAmountView.setTextColor(ContextCompat.getColor(mContext, R.color.Plus));
+            totalAmountView.setText(amount+" 원");
+        }
+        else if(amount<0) {
+            amount = -amount;
+            totalAmountView.setTextColor(ContextCompat.getColor(mContext, R.color.Minus));
+            totalAmountView.setText(amount+" 원");
+        }
+        else{
+            totalAmountView.setTextColor(ContextCompat.getColor(mContext, R.color.DarkTheme4));
+            totalAmountView.setText("- 원");
+        }
+    }
+
+    public void sortThis(int method){
+        Collections.sort(engine.ptransactions, new ComparatorEngine().getTransactionComparator(method));
+    }
+
     public void update(){
         engine.ptransactions.clear();
         engine.ptransactions.addAll(realEngine.ptransactions);
@@ -133,4 +167,6 @@ public class PersonalRecyclerAdapter extends RecyclerView.Adapter<PersonalRecycl
             cardView = (CardView)view.findViewById(R.id.detail_card);
         }
     }
+
+    TextView totalAmountView;
 }

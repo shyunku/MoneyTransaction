@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class PersonalTransaction {
     private String personName;
-    private ArrayList<Transaction> transactions = new ArrayList<>();
+    private ArrayList<Transaction> transactions;
 
     public PersonalTransaction(String personName, long value, long curTime, int type, String reason){
         this.personName = personName;
@@ -30,6 +30,10 @@ public class PersonalTransaction {
 
     public void addTransaction(long value, long curTime, int type, String reason){
         transactions.add(new Transaction(value, curTime, type, reason));
+    }
+
+    public void setTransaction(ArrayList<Transaction> trans){
+        transactions = trans;
     }
 
     public String getPersonName(){
