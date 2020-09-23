@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -46,14 +47,11 @@ public class DetailListAdapter extends RecyclerView.Adapter<DetailListAdapter.Vi
         holder.reasonView.setText(trans.getReason());
         String typeStr = "";
         switch(trans.getType()){
-           case Transaction.WILL_PAY_BACK://빌린돈
-                typeStr = oppName+"에게 빌렸음";
+           case Transaction.GET_BACK:// 받을 돈
+                typeStr = "나 → "+ oppName;
                 break;
-            case Transaction.LEND://빌려준 돈
-                typeStr = oppName+"에게 빌려줌";
-                break;
-            case Transaction.PAY_BACK://갚는 돈
-                typeStr = oppName+"에게 갚음";
+            case Transaction.LEND: //빌린 돈
+                typeStr = "나 ← "+ oppName;
                 break;
         }
         holder.typeView.setText(typeStr);
@@ -73,13 +71,8 @@ public class DetailListAdapter extends RecyclerView.Adapter<DetailListAdapter.Vi
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setTitle("");
                 switch(trans.getType()){
-                    case Transaction.WILL_PAY_BACK://빌린돈
-                        arr = new String[] {"수정", "삭제", "갚았음"};
-                        break;
+                    case Transaction.GET_BACK://빌린돈
                     case Transaction.LEND://빌려준 돈
-                        arr = new String[] {"수정", "삭제", "받았음"};
-                        break;
-                    case Transaction.PAY_BACK://갚는 돈
                         arr = new String[] {"수정", "삭제"};
                         break;
                 }
@@ -112,7 +105,7 @@ public class DetailListAdapter extends RecyclerView.Adapter<DetailListAdapter.Vi
         public TextView typeView;
         public TextView timeView;
         public TextView valueView;
-        public CardView cardView;
+        public ConstraintLayout cardView;
 
         public ViewHolder(@NonNull View view) {
             super(view);
@@ -120,7 +113,7 @@ public class DetailListAdapter extends RecyclerView.Adapter<DetailListAdapter.Vi
             typeView = (TextView)view.findViewById(R.id.detail_type);
             timeView = (TextView)view.findViewById(R.id.detail_time);
             valueView = (TextView)view.findViewById(R.id.detail_amount);
-            cardView = (CardView)view.findViewById(R.id.detail_card);
+            cardView = (ConstraintLayout)view.findViewById(R.id.detail_card);
         }
     }
 }

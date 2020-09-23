@@ -4,9 +4,8 @@ import java.io.Serializable;
 
 @SuppressWarnings("serial")
 public class Transaction implements Serializable {
-    public static final transient int WILL_PAY_BACK = 1000;       //-
-    public static final transient int LEND = 1001;                            //+
-    public static final transient int PAY_BACK = 1002;                   //+
+    public static final transient int GET_BACK = 1000;            //+
+    public static final transient int LEND = 1001;                //-
 
     private long value;
     private long timestamp;
@@ -14,7 +13,7 @@ public class Transaction implements Serializable {
     private String reason;
 
     public Transaction(long value, long curTime, int type, String reason) {
-        if(type == WILL_PAY_BACK)
+        if(type == LEND)
             this.value = -value;
         else
             this.value = value;

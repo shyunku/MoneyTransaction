@@ -1,10 +1,16 @@
 package shyunku.project.moneytransaction;
 
+import android.content.Context;
 import android.os.Environment;
 import android.util.JsonReader;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import org.json.JSONObject;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -15,43 +21,36 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 
 public class FileManager {
-    public void saveFile(TransactionEngine engine){
-        Log.e("try", "saving");
+    private final String fileName = "transactions.json";
+    public static Context fileManageContext;
 
-        Gson gson = new Gson();
-        File saveFile  = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/MoneyTransaction");
-        if(!saveFile.exists())
-            saveFile.mkdir();
-        try(FileWriter writer = new FileWriter(saveFile+"/savedData.json")){
+    public void saveFile(TransactionEngine engine){
+        Log.e("txx", "saving");
+
+        File file = new File(fileManageContext.getFilesDir(), fileName);
+        Gson gson = new GsonBuilder().setLenient().create();
+
+        try(FileWriter writer = new FileWriter(file.getAbsolutePath())){
             gson.toJson(engine, writer);
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e("txx", e.getMessage());
         }
     }
 
     public TransactionEngine loadFile(){
-        String path = Environment.getExternalStorageDirectory().getAbsolutePath()+"/MoneyTransaction";
-        Log.e("try", "loading");
-        TransactionEngine engine = null;
-        Gson gson = new Gson();
-        File saveFile = null;
-        saveFile = new File(path);
+        JsonParser parser = new JsonParser();
+        Log.e("txx", "loading");
 
-        if(saveFile==null) {
-            saveFile.mkdir();
-        }
+        File file = new File(fileManageContext.getFilesDir(), fileName);
+        TransactionEngine engine = null;
+        Gson gson = new GsonBuilder().setLenient().create();
+
         try {
-            File check = new File(path+"/savedData.json");
-            if(!check.exists()) {
-                check.createNewFile();
-                return null;
-            }
-            JsonReader reader = new JsonReader(new FileReader(path+"/savedData.json"));
-            engine = gson.fromJson(new FileReader(path+"/savedData.json"), TransactionEngine.class);
+            JsonObject jsonObject = (JsonObject) parser.parse(new FileReader(file.getAbsolutePath()));
+            engine = gson.fromJson(new FileReader(file.getAbsolutePath()), TransactionEngine.class);
+            Log.e("txx", jsonObject.toString());
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            // file not found
         }
         return engine;
     }

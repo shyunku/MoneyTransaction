@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -157,14 +158,14 @@ public class PersonalRecyclerAdapter extends RecyclerView.Adapter<PersonalRecycl
         public TextView nameView;
         public TextView valueView;
         public TextView recentTimeView;
-        public CardView cardView;
+        public ConstraintLayout cardView;
 
         public ViewHolder(@NonNull View view) {
             super(view);
             nameView = (TextView)view.findViewById(R.id.detail_type);
             valueView = (TextView)view.findViewById(R.id.detail_amount);
             recentTimeView = (TextView)view.findViewById(R.id.detail_time);
-            cardView = (CardView)view.findViewById(R.id.detail_card);
+            cardView = (ConstraintLayout) view.findViewById(R.id.detail_card);
         }
     }
 

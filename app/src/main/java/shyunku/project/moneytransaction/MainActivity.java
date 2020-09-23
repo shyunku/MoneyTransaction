@@ -41,7 +41,7 @@ import java.util.Date;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
-    public static final String Version = "beta v0.12.3-25";
+    public static final String Version = "beta v0.13.1-29";
     RecyclerView recyclerView;
     PersonalRecyclerAdapter adapter;
     RecyclerView.LayoutManager layoutManager;
@@ -57,7 +57,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        FileManager.fileManageContext = this;
+
+
         checkPermission();
+
         TransactionEngine e = new FileManager().loadFile();
         if(e != null) engine = e;
 
@@ -87,12 +91,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 final String[] arr = new String[] {
-                        "최근 거래 순으로 정렬 (기본)",
-                        "갚을 돈 많은 순으로 정렬",
-                        "받을 돈 많은 순으로 정렬",
-                        "이름순으로 정렬 (오름차순 : ㄱ~ㅎ)",
-                        "이름순으로 정렬 (내림차순 : ㅎ~ㄱ)",
-                        "거래 많은 순으로 정렬",};
+                        "최근 거래 순 (기본)",
+                        "갚을 돈 많은 순",
+                        "받을 돈 많은 순",
+                        "이름순 (오름차순 : ㄱ~ㅎ)",
+                        "이름순 (내림차순 : ㅎ~ㄱ)",
+                        "거래 많은 순",};
                 android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(MainActivity.this);
                 builder.setTitle("정렬/필터 선택");
                 builder.setItems(arr, new DialogInterface.OnClickListener() {
@@ -232,16 +236,17 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         int idx = radioGroup.indexOfChild(radioGroup.findViewById(radioGroup.getCheckedRadioButtonId()));
-                        int types = Transaction.WILL_PAY_BACK;
+                        int types = Transaction.GET_BACK;
                         switch(idx){
-                            case 0:types = Transaction.WILL_PAY_BACK;break;
+                            case 0:types = Transaction.GET_BACK;break;
                             case 1:types = Transaction.LEND;break;
-                            case 2:types = Transaction.PAY_BACK;break;
                         }
                         engine.add(oppName.getText()+"", Integer.parseInt(evalue.getText()+""), times,  types, reasonView.getText()+"");
                         update();
                         adapter.update();
                         alertDialog.dismiss();
+
+                        new FileManager().saveFile(engine);
                     }
                 });
 
@@ -304,6 +309,9 @@ public class MainActivity extends AppCompatActivity {
     public void checkPermission(){
         if(checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+        }
+        if(checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
         }
     }
 
